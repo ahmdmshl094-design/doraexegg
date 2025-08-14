@@ -17,13 +17,14 @@
     "LANGUAGE": "ar_SY",
     "LOG_LEVEL": 1,
     "MODERATORS": [
-        "61553754531086"
+        "61553754531086", 
+        "61579194721841"
     ],
     "ABSOLUTES": [
         "61553754531086"
     ],
-    "NAME": "مـشـمـش بــوت",
-    "PREFIX": "-",
+    "NAME": "ⓂⓈⒽⓂⓈⒽ ⒷⓄⓉ",
+    "PREFIX": ".",
     "timezone": "Asia/Manila",
     "REFRESH": "43200000"
 }
