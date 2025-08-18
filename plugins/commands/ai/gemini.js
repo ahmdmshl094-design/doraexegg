@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const config = {
-  name: 'جي',
+  name: 'مشموش',
   version: '1.0',
   permissions: 0,
   credits: 'rapido',
