@@ -1,0 +1,31 @@
+{
+    "APPSTATE_PATH": "./appstate.json",
+    "APPSTATE_PROTECTION": true,
+    "AUTO_PING_SERVER": true,
+    "ALLOW_INBOX": false,
+    "DATABASE": "JSON",
+    "DATABASE_JSON_BEAUTIFY": true,
+    "FCA_OPTIONS": {
+        "pauseLog": false,
+        "logLevel": "silent",
+        "selfListen": false,
+        "listenEvents": true,
+        "forceLogin": true,
+        "userAgent": "Mozilla/5.0 (Linux; Android 13; SM-G973U Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.170 Mobile Safari/537.36",
+        "online": true
+    },
+    "LANGUAGE": "ar_SY",
+    "LOG_LEVEL": 1,
+    "MODERATORS": [
+        "61553754531086", 
+        "61579194721841"
+    ],
+    "ABSOLUTES": [
+        "61553754531086", 
+        "61579194721841"
+    ],
+    "NAME": "ⓂⓈⒽⓂⓈⒽ ⒷⓄⓉ",
+    "PREFIX": "-",
+    "timezone": "Asia/Manila",
+    "REFRESH": "43200000"
+}
