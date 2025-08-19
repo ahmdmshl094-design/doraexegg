@@ -93,4 +93,4 @@ export default async function ({ event }) {
     await Threads.updateInfo(threadID, { members: getThreadInfo.members, isSubscribed: getThreadInfo.isSubscribed });
 
     return;
-                                        }
+}
