@@ -59,10 +59,10 @@ async function onCall({ message, args, getLang, userPermissions, prefix}) {
       commands[category].push(displayName);
 }
 
-    let list = "※═══════『قائمة الاوامر』═══════※\n\n";
+    let list = "※══════『قائمة الاوامر』══════※\n\n";
 
     for (const [category, cmds] of Object.entries(commands)) {
-      list += ` □  ❴ ${category} ❵  ❰  \n\n`;
+      list += ` □  ❴ ${category} ❵    \n\n`;
 
       for (let i = 0; i < cmds.length; i += 4) {
         const row = cmds.slice(i, i + 4).map(cmd => ` ◎ ${cmd}`).join("  ");
@@ -78,7 +78,7 @@ async function onCall({ message, args, getLang, userPermissions, prefix}) {
     list += `    ○ ❴ الاسم  ❵  ◄   مشمش \n`;
     list += `    ○ ❴ المطور ❵  ◄  ࢪاكـو سان\n`;
     list += `⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n`;
-    list += ` ■ ${prefix}اوامر + اسم الامر لرئية تفاصيل الامر \n`;
+    list += ` ◄  ${prefix}اوامر + اسم الامر لرئية تفاصيل الامر \n`;
 
     message.reply(getLang("help.list", { list}));
 } else {
