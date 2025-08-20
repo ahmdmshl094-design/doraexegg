@@ -1,24 +1,8 @@
-import axios from "axios";
-import { join} from "path";
 import { createCanvas, loadImage} from "canvas";
 import fs from "fs-extra";
+import path from "path";
+import axios from "axios";
 
-export const config = {
-  name: "مطلوب",
-  description: "إنشاء بوستر مطلوب لشخص",
-  usage: "[@منشن أو رد] [نص اختياري]",
-  cooldown: 3,
-  permissions: [0, 1, 2],
-  credits: "XaviaTeam + تعديل مشمش",
-};
-
-export const langData = {
-  ar_SY: {
-    error: "لقد حدث خطأ، رجاء أعد المحاولة لاحقا",
-},
-};
-
-// 🧠 دالة جلب صورة البروفايل
 async function getAvatarUrl(userID) {
   try {
     const res = await axios.post("https://www.facebook.com/api/graphql/", null, {
@@ -33,65 +17,53 @@ async function getAvatarUrl(userID) {
 }
 }
 
-export async function onCall({ message, getLang}) {
-  try {
-    const { mentions, messageReply, senderID} = message;
-    const targetID = Object.keys(mentions)[0] || messageReply?.senderID || senderID;
+export async function makeCenteredImage({ userID}) {
+  await fs.ensureDir(global.cachePath);
 
-    // ✅ تأكد من وجود مجلد الكاش
-    await fs.ensureDir(global.cachePath);
+  const avatarUrl = await getAvatarUrl(userID);
+  const avatarPath = path.join(global.cachePath, `centered_${userID}.png`);
+  await global.downloadFile(avatarPath, avatarUrl);
 
-    // تحميل صورة البروفايل
-    const avatarUrl = await getAvatarUrl(targetID);
-    const avatarPath = join(global.cachePath, `wanted_${targetID}.png`);
-    await global.downloadFile(avatarPath, avatarUrl);
-    const avatar = await loadImage(avatarPath);
+  const overlayURL = "https://i.postimg.cc/vmFqjkw8/467471884-1091680152417037-7359182676446817237-n.jpg";
+  const overlayPath = path.join(global.cachePath, "overlay_template.png");
+  await global.downloadFile(overlayPath, overlayURL);
 
-    // تحميل صورة البوستر
-    const posterURL = "https://i.postimg.cc/vmFqjkw8/467471884-1091680152417037-7359182676446817237-n.jpg";
-    const posterPath = join(global.cachePath, "wanted_template.png");
-    await global.downloadFile(posterPath, posterURL);
-    const template = await loadImage(posterPath);
+  const overlayImg = await loadImage(overlayPath);
+  const avatarImg = await loadImage(avatarPath);
 
-    // إنشاء التصميم
-    const canvas = createCanvas(template.width, template.height);
-    const ctx = canvas.getContext("2d");
+  const canvas = createCanvas(overlayImg.width, overlayImg.height);
+  const ctx = canvas.getContext("2d");
 
-    ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+  // رسم الخلفية
+  ctx.drawImage(overlayImg, 0, 0, canvas.width, canvas.height);
 
-    // إعدادات الصورة داخل المربع
-    const boxX = 142;
-    const boxY = 135;
-    const boxSize = 300;
+  // إعدادات الصورة في المنتصف
+  const avatarSize = overlayImg.width / 2;
+  const x = overlayImg.width / 2 - avatarSize / 2;
+  const y = overlayImg.height / 2 - avatarSize / 2 - 25;
 
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(boxX, boxY, boxSize, boxSize);
-    ctx.clip();
-    ctx.drawImage(avatar, boxX, boxY, boxSize, boxSize);
-    ctx.restore();
+  // رسم الصورة بشكل دائري
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x + avatarSize / 2, y + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(avatarImg, x, y, avatarSize, avatarSize);
+  ctx.restore();
 
-    // حفظ الصورة النهائية
-    const outputPath = join(global.cachePath, `wanted_result_${targetID}.png`);
-    const buffer = canvas.toBuffer("image/png");
-    fs.writeFileSync(outputPath, buffer);
+  // بوردر أبيض حول الصورة
+  ctx.beginPath();
+  ctx.arc(x + avatarSize / 2, y + avatarSize / 2, avatarSize / 2 + 2, 0, Math.PI * 2);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#ffffff";
+  ctx.stroke();
 
-    // حذف الملفات المؤقتة
-    fs.unlinkSync(avatarPath);
-    fs.unlinkSync(posterPath);
+  const outputPath = path.join(global.cachePath, `centered_result_${userID}.png`);
+  const buffer = canvas.toBuffer("image/png");
+  fs.writeFileSync(outputPath, buffer);
 
-    return message.reply({
-      attachment: fs.createReadStream(outputPath)
-});
+  fs.unlinkSync(avatarPath);
+  fs.unlinkSync(overlayPath);
 
-} catch (e) {
-    console.error(e);
-    return message.reply(getLang("error"));
+  return outputPath;
 }
-}
-
-export default {
-  config,
-  langData,
-  onCall,
-};
