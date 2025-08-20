@@ -1,8 +1,24 @@
+import axios from "axios";
+import { join} from "path";
 import { createCanvas, loadImage} from "canvas";
 import fs from "fs-extra";
-import path from "path";
-import axios from "axios";
 
+export const config = {
+  name: "مطلوب",
+  description: "إنشاء بوستر مطلوب مع صورة في المنتصف",
+  usage: "[@منشن أو رد]",
+  cooldown: 3,
+  permissions: [0, 1, 2],
+  credits: "XaviaTeam + تعديل مشمش",
+};
+
+export const langData = {
+  ar_SY: {
+    error: "لقد حدث خطأ، رجاء أعد المحاولة لاحقا",
+},
+};
+
+// 🧠 دالة جلب صورة البروفايل
 async function getAvatarUrl(userID) {
   try {
     const res = await axios.post("https://www.facebook.com/api/graphql/", null, {
@@ -17,53 +33,75 @@ async function getAvatarUrl(userID) {
 }
 }
 
-export async function makeCenteredImage({ userID}) {
-  await fs.ensureDir(global.cachePath);
+export async function onCall({ message, getLang}) {
+  try {
+    const { mentions, messageReply, senderID} = message;
+    const targetID = Object.keys(mentions)[0] || messageReply?.senderID || senderID;
 
-  const avatarUrl = await getAvatarUrl(userID);
-  const avatarPath = path.join(global.cachePath, `centered_${userID}.png`);
-  await global.downloadFile(avatarPath, avatarUrl);
+    // ✅ تأكد من وجود مجلد الكاش
+    await fs.ensureDir(global.cachePath);
 
-  const overlayURL = "https://i.postimg.cc/vmFqjkw8/467471884-1091680152417037-7359182676446817237-n.jpg";
-  const overlayPath = path.join(global.cachePath, "overlay_template.png");
-  await global.downloadFile(overlayPath, overlayURL);
+    // تحميل صورة البروفايل
+    const avatarUrl = await getAvatarUrl(targetID);
+    const avatarPath = join(global.cachePath, `wanted_avatar_${targetID}.png`);
+    await global.downloadFile(avatarPath, avatarUrl);
+    const avatarImg = await loadImage(avatarPath);
 
-  const overlayImg = await loadImage(overlayPath);
-  const avatarImg = await loadImage(avatarPath);
+    // تحميل صورة الخلفية
+    const posterURL = "https://i.postimg.cc/vmFqjkw8/467471884-1091680152417037-7359182676446817237-n.jpg";
+    const posterPath = join(global.cachePath, "wanted_template.png");
+    await global.downloadFile(posterPath, posterURL);
+    const overlayImg = await loadImage(posterPath);
 
-  const canvas = createCanvas(overlayImg.width, overlayImg.height);
-  const ctx = canvas.getContext("2d");
+    // إنشاء التصميم
+    const canvas = createCanvas(overlayImg.width, overlayImg.height);
+    const ctx = canvas.getContext("2d");
 
-  // رسم الخلفية
-  ctx.drawImage(overlayImg, 0, 0, canvas.width, canvas.height);
+    // رسم الخلفية
+    ctx.drawImage(overlayImg, 0, 0, canvas.width, canvas.height);
 
-  // إعدادات الصورة في المنتصف
-  const avatarSize = overlayImg.width / 2;
-  const x = overlayImg.width / 2 - avatarSize / 2;
-  const y = overlayImg.height / 2 - avatarSize / 2 - 25;
+    // إعدادات الصورة في المنتصف
+    const avatarSize = overlayImg.width / 2;
+    const x = overlayImg.width / 2 - avatarSize / 2;
+    const y = overlayImg.height / 2 - avatarSize / 2 - 25;
 
-  // رسم الصورة بشكل دائري
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x + avatarSize / 2, y + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
-  ctx.closePath();
-  ctx.clip();
-  ctx.drawImage(avatarImg, x, y, avatarSize, avatarSize);
-  ctx.restore();
+    // رسم الصورة بشكل دائري
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x + avatarSize / 2, y + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(avatarImg, x, y, avatarSize, avatarSize);
+    ctx.restore();
 
-  // بوردر أبيض حول الصورة
-  ctx.beginPath();
-  ctx.arc(x + avatarSize / 2, y + avatarSize / 2, avatarSize / 2 + 2, 0, Math.PI * 2);
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = "#ffffff";
-  ctx.stroke();
+    // بوردر أبيض حول الصورة
+    ctx.beginPath();
+    ctx.arc(x + avatarSize / 2, y + avatarSize / 2, avatarSize / 2 + 2, 0, Math.PI * 2);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#ffffff";
+    ctx.stroke();
 
-  const outputPath = path.join(global.cachePath, `centered_result_${userID}.png`);
-  const buffer = canvas.toBuffer("image/png");
-  fs.writeFileSync(outputPath, buffer);
+    // حفظ الصورة النهائية
+    const outputPath = join(global.cachePath, `wanted_result_${targetID}.png`);
+    const buffer = canvas.toBuffer("image/png");
+    fs.writeFileSync(outputPath, buffer);
 
-  fs.unlinkSync(avatarPath);
-  fs.unlinkSync(overlayPath);
+    // حذف الملفات المؤقتة
+    fs.unlinkSync(avatarPath);
+    fs.unlinkSync(posterPath);
 
-  return outputPath;
+    return message.reply({
+      attachment: fs.createReadStream(outputPath)
+});
+
+} catch (e) {
+    console.error(e);
+    return message.reply(getLang("error"));
 }
+}
+
+export default {
+  config,
+  langData,
+  onCall,
+};
