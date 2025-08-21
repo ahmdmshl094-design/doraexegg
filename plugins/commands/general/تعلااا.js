@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+const binId = "68a6dedf43b1c97be92426df";
+const masterKey = "$2a$10$V6m/7anDHsUmD8PNxlVHr.49kh2pau1VkKaQVzbUaPLwuyRa861Pe";
 
 const config = {
   name: "تعلم",
@@ -17,49 +17,60 @@ const langData = {
     missingInput: "السؤال أو الرد ناقص!",
     succeed: "تم إضافة الرد ✅",
     failed: "فشل الإضافة ❌",
-    error: "في مشكلة، حاول تاني", 
-  },
+    error: "في مشكلة، حاول تاني",
+},
 };
 
-const dataPath = path.join(process.cwd(), "ninoData.json");
-
-function loadData() {
+async function loadData() {
   try {
-    if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, "{}");
-    return JSON.parse(fs.readFileSync(dataPath, "utf8"));
-  } catch {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+      headers: {
+        "X-Master-Key": masterKey
+}
+});
+    const json = await res.json();
+    return json.record || {};
+} catch {
     return {};
-  }
+}
 }
 
-function saveData(data) {
+async function saveData(data) {
   try {
-    fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
-    return true;
-  } catch {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": masterKey
+},
+      body: JSON.stringify(data)
+});
+    const result = await res.json();
+    return result.message === "Bin updated";
+} catch {
     return false;
-  }
+}
 }
 
-async function onCall({ message, args, getLang }) {
+async function onCall({ message, args, getLang}) {
   const arrowIndex = args.indexOf("=>");
   if (arrowIndex === -1) return message.reply(getLang("wrongSyntax"));
 
   const key = args.slice(0, arrowIndex).join(" ").trim();
   const value = args.slice(arrowIndex + 1).join(" ").trim();
 
-  if (!key || !value) return message.reply(getLang("missingInput"));
+  if (!key ||!value) return message.reply(getLang("missingInput"));
 
   try {
-    const data = loadData();
+    const data = await loadData();
     if (!data[key]) data[key] = [];
     if (!data[key].includes(value)) data[key].push(value);
-    const saved = saveData(data);
+    const saved = await saveData(data);
     if (saved) return message.reply(getLang("succeed"));
     else return message.reply(getLang("failed"));
-  } catch (err) {
+} catch (err) {
     return message.reply(getLang("error"));
-  }
+}
 }
 
 export default {
