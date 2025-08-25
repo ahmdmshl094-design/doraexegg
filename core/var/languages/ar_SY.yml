@@ -1,5 +1,4 @@
-# _build.js
-build.start.varLoaded: "تم تحميل متغير البيئة بنجاح."
+# _build.start.varLoaded: "تم تحميل متغير البيئة بنجاح."
 build.start.exit: "التنظيف والخروج..."
 build.start.serverStarted: "تمت تهيئة الخادم في البوابة {port} بكلمة سر: {serverAdminPassword}"
 
@@ -68,7 +67,7 @@ plugins.events.change_thread_image.reversed_t: "الحماية مفعله وان
 plugins.events.change_thread_image.setNewImage: "\nغير مسموح بتغيير صور المجموعة ولكن نظرًا لعدم وجود صور قديمة ، سيتم استخدام صور جديدة."
 
 plugins.events.subcribe.addSelf: "Bot تمت إضافته إلى المجموعة \"{threadName}\" ({threadId}) من قبل شخص يستخدم \"{authorName}\" ({authorId})."
-plugins.events.subcribe.connected: "❀━━━━〖 مـشـمـش 〗━━━━❀\n\n ✅ تم الاتصال بنجاح \n\n════════❍════════\n\n  اسم البوت  : مشمش \n\n════════❍════════\n\n اسم المطور  : صلاح الدين \n\n════════❍════════\n\n رابط حساب المطور: https://www.facebook.com/Rako.San.r.s \n\n════════❍════════\n\n  .-اوامر لرئية قائمة الاوامر. \n\n"
+plugins.events.subcribe.connected: "❀━━━━〖 ظفو 〗━━━━❀\n\n ✅ تم الاتصال بنجاح \n\n════════❍════════\n\n  اسم البوت  : ظفو \n\n════════❍════════\n\n اسم المطور  : صلاح الدين \n\n════════❍════════\n\n رابط حساب المطور: https://www.facebook.com/Rako.San.r.s \n\n════════❍════════\n\n  .-اوامر لرئية قائمة الاوامر. \n\n"
 plugins.events.subcribe.error.createMonitor: "تعذر إنشاء مجموعة مشرفين لهذه المجموعة."
 plugins.events.subcribe.createdMonitor: "المجموعة {threadId} سيتم رصد العمل في هذه المجموعة"
 # plugins.events.subcribe.addMembers: "\"{authorName}\" ({authorId}) اضاف {membersLength} عضو:\n{members}"
@@ -79,7 +78,7 @@ plugins.events.unsubcribe.bot.left: "Bot غادر \"{threadName}\" ({threadId}).
 plugins.events.unsubcribe.bot.kicked: "Bot تم طرده من \"{threadName}\" ({threadId}) بواسطة \"{authorName}\" ({authorId})."
 # plugins.events.unsubcribe.left: "\"{leftName}\" ({leftId}) غادر بكرامته ಥ‿ಥ ."
 # plugins.events.unsubcribe.kicked: "\"{leftName}\" ({leftId}) تم طرده من قبل\"{authorName}\" ({authorId})."
-plugins.events.unsubcribe.left: "{leftName} كــــــــان رقـــــــاصـــة (〃ﾟ3ﾟ〃) "
+plugins.events.unsubcribe.left: "{leftName} \n كــــــــان رقـــــــاصـــة (〃ﾟ3ﾟ〃) "
 plugins.events.unsubcribe.kicked: "{leftName} هـل تـعـرف مــاهـي الـتـكـة؟ اذا لـم تـعـرف فلا تـسـتـحـق ان تـكـون هـنـا \n بـــــــــــانــــكـــي ヽ(*´з｀*)ﾉ"
 plugins.events.unsubcribe.antiOut.error: "حاولت ارجعو لاكن طلع عب ما نافع عشان كدا كسرت حنكو 🙂💔"
 plugins.events.unsubcribe.antiOut.success: "الفارة عامل فيها طالع، 🗿 مافي طلوع بكرامه وانا قاعد  😇"
