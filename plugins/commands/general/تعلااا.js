@@ -1,4 +1,4 @@
-const binId = "68a6dedf43b1c97be92426df";
+const binId = "68b0fd75ae596e708fda82c1";
 const masterKey = "$2a$10$V6m/7anDHsUmD8PNxlVHr.49kh2pau1VkKaQVzbUaPLwuyRa861Pe";
 
 const config = {
