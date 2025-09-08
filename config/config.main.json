@@ -26,8 +26,8 @@
         "61580254884847", 
         "61580254884847"
     ],
-    "NAME": "Dora Bot",
-    "PREFIX": "/",
+    "NAME": "colo Bot",
+    "PREFIX": "$",
     "timezone": "Asia/Manila",
     "REFRESH": "43200000"
 }
